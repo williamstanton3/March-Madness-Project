@@ -132,6 +132,54 @@ def plot_final_four_by_seed(df: pd.DataFrame) -> Image.Image:
     plt.tight_layout()
     return get_image()
 
+
+def plot_experience_vs_adjEM(df: pd.DataFrame) -> Image.Image:
+    d = df[["Experience", "AdjEM", "Tournament Championship?", "Final Four?"]].dropna()
+    champ = d["Tournament Championship?"].str.strip().str.lower() == "yes"
+    ff = (~champ) & (d["Final Four?"].str.strip().str.lower() == "yes")
+    rest = ~(champ | ff)
+
+    fig, ax = plt.subplots(figsize=(9, 6))
+    ax.scatter(d.loc[rest, "Experience"], d.loc[rest, "AdjEM"], alpha=0.2, s=14, label="All others")
+    ax.scatter(d.loc[ff, "Experience"], d.loc[ff, "AdjEM"], s=50, edgecolors="black", lw=0.5, label="Final Four")
+    ax.scatter(d.loc[champ, "Experience"], d.loc[champ, "AdjEM"], s=100, edgecolors="black", lw=0.7, zorder=5, label="Champion")
+
+    z = np.polyfit(d["Experience"], d["AdjEM"], 1)
+    xs = np.linspace(d["Experience"].min(), d["Experience"].max(), 200)
+    ax.plot(xs, np.poly1d(z)(xs), ls="--", alpha=0.7, label="Trend")
+
+    ax.set_xlabel("Experience (avg years)")
+    ax.set_ylabel("AdjEM")
+    ax.set_title("Experience vs. AdjEM")
+    ax.legend()
+    ax.grid(alpha=0.2)
+    plt.tight_layout()
+    return get_image()
+
+
+def plot_conference_adjEM(df: pd.DataFrame) -> Image.Image:
+    d = df[["Short Conference Name", "AdjEM"]].dropna()
+    stats = (d.groupby("Short Conference Name")["AdjEM"]
+              .agg(["mean", "median", "count"])
+              .reset_index())
+    stats = stats[stats["count"] >= 20].sort_values("mean", ascending=False).head(15)
+
+    fig, ax = plt.subplots(figsize=(13, 6))
+    x = np.arange(len(stats))
+    w = 0.38
+    ax.bar(x - w / 2, stats["mean"],   width=w, label="Mean")
+    ax.bar(x + w / 2, stats["median"], width=w, label="Median")
+    ax.set_xticks(x)
+    ax.set_xticklabels(stats["Short Conference Name"], rotation=45, ha="right")
+    ax.axhline(0, color="grey", lw=1, ls="--", alpha=0.5)
+    ax.set_ylabel("AdjEM")
+    ax.set_title("Conference AdjEM")
+    ax.legend()
+    ax.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    return get_image()
+
+
 def main():
     clean_data = pd.read_csv("data/mm_clean.csv")
     print(f"Loaded {len(clean_data):,} rows x {len(clean_data.columns)} columns\n")
@@ -142,6 +190,8 @@ def main():
         ("plot3_adjEM_by_seed_violin.png",  plot_adjEM_by_seed),
         ("plot4_correlation_heatmap.png",   plot_correlation_heatmap),
         ("plot5_final_four_by_seed.png",    plot_final_four_by_seed),
+        ("plot6_experience_vs_adjEM.png",   plot_experience_vs_adjEM),
+        ("plot7_conference_adjEM.png",      plot_conference_adjEM),
     ]
 
     for filename, fn in plots:
