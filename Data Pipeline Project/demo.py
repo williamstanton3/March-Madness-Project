@@ -23,7 +23,7 @@ from Models.models import train_model, save_model
 
 def main(args: Namespace):
     # load the configuration from the JSON config file
-    config: Config = load_config("/Users/josephshin/March-Madness-Project/Data Report Project/data/mm_config.json")
+    config: Config = load_config(args.config)
 
     # load the columns specified into a DataFrame
     dtypes: dict[str,DTypeLike] = {attr_name:get_datatype(attr_config.type) \
@@ -184,4 +184,7 @@ def get_datatype(name: str) -> DTypeLike:
         case _: raise ValueError(f"Unrecognized attribute type {name}")
 
 if __name__=='__main__':
-    main(None)
+    parser = ArgumentParser()
+    parser.add_argument('config', nargs='?', default="../Data Report Project/data/mm_config.json")
+    args = parser.parse_args()
+    main(args)
