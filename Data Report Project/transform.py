@@ -1,3 +1,5 @@
+# single file to create a clean dataset
+
 import pandas as pd
 
 # list of columns that we are going to use for our project
@@ -243,6 +245,5 @@ def main():
 
     df.to_csv("data/mm_clean.csv", index=False)
     print("[main] Saved cleaned dataset to 'clean_data_set/mm_clean.csv'")
-
 
 main()

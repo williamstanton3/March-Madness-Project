@@ -43,6 +43,15 @@
   "modeling": [
     {
       "name": "championship_predictor",
+      "model_type": "random_forest",
+      "target": "Tournament Winner?",
+      "features": ["Adjusted Offensive Efficiency", "Adjusted Defensive Efficiency"],
+      "model_path": "../../Models/championship_model.pkl",
+      "args": [],
+      "kwargs": {}
+    },
+        {
+      "name": "championship_predictor",
       "model_type": "logistic_regression",
       "target": "Tournament Winner?",
       "features": ["Adjusted Offensive Efficiency", "Adjusted Defensive Efficiency"],
