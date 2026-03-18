@@ -21,9 +21,9 @@ from data_inspector import make_plot
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from Models.models import train_model, save_model
 
-def main(args: Namespace):
+def main():
     # load the configuration from the JSON config file
-    config: Config = load_config("/Users/josephshin/March-Madness-Project/Data Report Project/data/mm_config.json")
+    config: Config = load_config("../Data Report Project/data/mm_config.json")
 
     # load the columns specified into a DataFrame
     dtypes: dict[str,DTypeLike] = {attr_name:get_datatype(attr_config.type) \
@@ -184,4 +184,4 @@ def get_datatype(name: str) -> DTypeLike:
         case _: raise ValueError(f"Unrecognized attribute type {name}")
 
 if __name__=='__main__':
-    main(None)
+    main()
