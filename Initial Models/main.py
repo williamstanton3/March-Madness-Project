@@ -1,50 +1,53 @@
-#In here we will list all of the initial questions we are asking and create the models that we created to answer these questions 
-import pandas as pd
-from school_type_predictor_model import train_model_pipeline
+import sys
+from models.school_type_predictor_model import train_models_and_get_accuracies as train_school_type
+from models.seed_predictor_model import train_models_and_get_accuracies as train_seed
+
+VALID_MODELS = ["logistic", "random_forest", "gradient_boosting", "svm"]
 
 
-def merge_data(main_file="../Data Report Project/data/mm_clean.csv", key_file="ncaa_d1_mapping.csv", output_file="merged_data.csv"):
-    """
-    Merges main dataset with school type mapping (public/private)
-    and outputs a cleaned dataset.
-    """
-
-    # Load data
-    main_df = pd.read_csv(main_file)
-    key_df = pd.read_csv(key_file)
-
-    # Rename column for consistency
-    key_df = key_df.rename(columns={"public_private": "School Type"})
-
-    # Merge on team name
-    df = pd.merge(main_df, key_df, on="Mapped ESPN Team Name", how="left")
-
-    # Check for unmatched rows
-    unmatched = df["School Type"].isna().sum()
-    if unmatched > 0:
-        print(f"Warning: {unmatched} rows could not be matched and will be dropped")
-
-    # Drop unmatched rows
-    df = df.dropna(subset=["School Type"])
-
-    # Save result
-    df.to_csv(output_file, index=False)
-    print(f"Merged {len(df)} rows into {output_file}")
-
-    return df
-
+def print_metrics(results):
+    for model_name, metrics in results.items():
+        print(f"  [{model_name}]")
+        print(f"    Accuracy:  {metrics['accuracy']:.4f}")
+        print(f"    Precision: {metrics['precision']:.4f}")
+        print(f"    Recall:    {metrics['recall']:.4f}")
+        print(f"    F1 Score:  {metrics['f1']:.4f}")
+        print(f"    Confusion Matrix:")
+        for row in metrics["confusion_matrix"]:
+            print(f"      {row}")
+        print(f"    Classification Report:")
+        for line in metrics["classification_report"].splitlines():
+            print(f"      {line}")
+        print()
 
 
 def main():
-    # first add 'private' or 'public' to the data 
-    initial_model_data = merge_data()
+    # If user passed model names, use them; otherwise run all
+    if len(sys.argv) > 1:
+        model_types = sys.argv[1:]
+        invalid = [m for m in model_types if m not in VALID_MODELS]
+        if invalid:
+            print(f"Invalid models: {invalid}")
+            print(f"Valid options: {VALID_MODELS}")
+            sys.exit(1)
+    else:
+        model_types = VALID_MODELS # use all valid models
 
-    print(initial_model_data[["Mapped ESPN Team Name", "School Type"]]) # eye check for validity
+    print(f"Training models: {model_types}\n")
 
-    # Question 1: Can we predict if a school is private or public?
-    
-    model, acc = train_model_pipeline(model_type="logistic")
+    # Question 1: Predict if a school is private or public
+    print("=" * 50)
+    print("SCHOOL TYPE (Public vs Private)")
+    print("=" * 50)
+    school_type_results = train_school_type(model_types=model_types)
+    print_metrics(school_type_results)
 
-    print(f"\nFinal accuracy: {acc:.4f}")
+    # Question 2: Predict which seed a team will be
+    print("=" * 50)
+    print("SEED PREDICTION")
+    print("=" * 50)
+    seed_results = train_seed(model_types=model_types)
+    print_metrics(seed_results)
+
 
 main()

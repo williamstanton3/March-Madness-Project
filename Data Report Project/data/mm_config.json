@@ -1,7 +1,7 @@
 {
   "raw_dataset_path": "mm.csv",
   "clean_dataset_path": "cleaned_basketball_stats.csv",
-"plot_directory_path": "../plots",
+  "plot_directory_path": "../plots",
   "model_directory_path": "../../Models",
   "attributes": {
     "Season": {"type": "nominal"},

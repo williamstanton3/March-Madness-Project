@@ -1,6 +1,6 @@
 import pandas as pd
 
-MAIN_FILE = "../Data Report Project/data/cleaned_basketball_stats.csv"
+MAIN_FILE = "../Data Report Project/data/mm_clean.csv"
 KEY_FILE = "ncaa_d1_mapping.csv"
 OUTPUT_FILE = "merged_data.csv"
 

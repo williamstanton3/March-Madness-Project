@@ -1,0 +1,43 @@
+{
+  "raw_dataset_path": "Data/mm_data.csv",
+  "clean_dataset_path": "Data/cleaned_basketball_stats.csv",
+  "plot_directory_path": "plots",
+  "attributes": {
+    "Season": {"type": "nominal"},
+    "Short Conference Name": {"type": "nominal"},
+    "Adjusted Tempo": {"type": "real", "missing_values": ["NA", "", "N/A"]},
+    "Adjusted Tempo Rank": {"type": "real"},
+    "Raw Tempo": {"type": "real"},
+    "Raw Tempo Rank": {"type": "real"},
+    "Adjusted Offensive Efficiency": {"type": "real", "missing_values": ["NA", "", "N/A"]},
+    "Adjusted Offensive Efficiency Rank": {"type": "real"},
+    "Adjusted Defensive Efficiency": {"type": "real", "missing_values": ["NA", "", "N/A"]},
+    "Adjusted Defensive Efficiency Rank": {"type": "real"},
+    "Mapped Conference Name": {"type": "nominal", "missing_values": ["Unknown", ""]},
+    "Mapped ESPN Team Name": {"type": "nominal", "missing_values": ["Unknown", ""]},
+    "Current Coach": {"type": "nominal", "missing_values": ["Unknown", ""]},
+    "Tournament Winner?": {"type": "nominal", "missing_values": ["Unknown", ""]}
+  },
+  "cleaning": [
+    {"attribute": "Adjusted Tempo", "missing_strategy": "replace_missing_with_mean"},
+    {"attribute": "Adjusted Offensive Efficiency", "missing_strategy": "replace_missing_with_mean"},
+    {"attribute": "Adjusted Defensive Efficiency", "missing_strategy": "replace_missing_with_mean"},
+    {"attribute": "Mapped Conference Name", "missing_strategy": "remove"},
+    {"attribute": "Mapped ESPN Team Name", "missing_strategy": "remove"},
+    {"attribute": "Current Coach", "missing_strategy": "remove"},
+    {"attribute": "Tournament Winner?", "missing_strategy": "replace_missing_with_mode"}
+  ],
+  "transforming": [
+    {"action": "min_max_norm", "attribute": "Adjusted Tempo", "args": [], "kwargs": {}},
+    {"action": "min_max_norm", "attribute": "Adjusted Offensive Efficiency", "args": [], "kwargs": {}},
+    {"action": "min_max_norm", "attribute": "Adjusted Defensive Efficiency", "args": [], "kwargs": {}},
+    {"action": "make_mean_bins", "attribute": "Adjusted Tempo", "args": ["freq", 5], "kwargs": {}},
+    {"action": "make_mean_bins", "attribute": "Adjusted Offensive Efficiency", "args": ["width", 4], "kwargs": {}}
+  ],
+  "plotting": [
+    {"action": "make_density_plot", "attribute": "Adjusted Tempo", "name": "AdjTempoDensity", "args": [], "kwargs": {}},
+    {"action": "make_boxplot", "attribute": "Adjusted Tempo", "name": "AdjTempoBoxplot", "args": [], "kwargs": {}},
+    {"action": "make_boxplot", "attribute": "Adjusted Offensive Efficiency", "name": "AdjOEBoxplot", "args": [], "kwargs": {}},
+    {"action": "make_barplot", "attribute": "Mapped Conference Name", "name": "ConferenceHistogram", "args": [], "kwargs": {}}
+  ]
+}
