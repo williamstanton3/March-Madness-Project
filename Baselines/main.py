@@ -2,16 +2,15 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, classification_report
 
-# import functions from other python files 
-from school_type import baseline_school_type_logistic_regression 
-from school_type import baseline_school_type_most_frequent
+# import functions from other python files
+from predict_seed import subset_data, baseline_predict_seed_most_frequent, baseline_predict_seed_logistic_regression, baseline_predict_seed_one_col
 from make_mm import (
     baseline_mm_most_appearances,
     baseline_mm_logistic_regression,
     baseline_mm_single_predictor,
 )
 
-TARGET_COL = "School Type"
+TARGET_COL = "Seed"
 MM_TARGET_COL = "Post-Season Tournament"
 
 DROP_COLS = [
@@ -109,23 +108,23 @@ def print_results(name, metrics):
 
 
 def main():
-    # Load data
     clean_df = pd.read_csv("data/merged_data.csv")
 
-    # ── School Type ──────────────────────────────────────────
-    X, y = load_and_prepare_data(clean_df)
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y
-    )
+    # predict seed baselines
+    X_train_s, X_test_s, y_train_s, y_test_s = subset_data(clean_df)
 
-    baseline_metrics = baseline_school_type_most_frequent(X_train, X_test, y_train, y_test)
-    print_results("Baseline (Most Frequent Class)", baseline_metrics)
+    seed_baseline_metrics = baseline_predict_seed_most_frequent(X_train_s, X_test_s, y_train_s, y_test_s)
+    print_results("Seed Prediction — Baseline (Most Frequent Class)", seed_baseline_metrics)
 
-    logistic_metrics = baseline_school_type_logistic_regression(X_train, X_test, y_train, y_test)
-    print_results("Baseline (Logistic Regression)", logistic_metrics)
+    seed_lr_metrics = baseline_predict_seed_logistic_regression(X_train_s, X_test_s, y_train_s, y_test_s)
+    print_results("Seed Prediction — Baseline (Logistic Regression)", seed_lr_metrics)
+
+    single_col = "Adjusted Offensive Efficiency Rank"
+    seed_one_col_metrics = baseline_predict_seed_one_col(X_train_s, X_test_s, y_train_s, y_test_s, single_col) 
+    print_results("Seed Prediction - Baseline (Single Column)", seed_one_col_metrics)
 
     print(f"\n{'='*40}")
-    print("  School Type Summary Comparison")
+    print("  Seed Prediction Summary Comparison")
     print(f"{'='*40}")
     print(f"  {'Model':<30} {'Accuracy':>10} {'F1':>10}")
     print(f"  {'-'*50}")
