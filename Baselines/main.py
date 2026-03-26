@@ -128,8 +128,8 @@ def main():
     print(f"{'='*40}")
     print(f"  {'Model':<30} {'Accuracy':>10} {'F1':>10}")
     print(f"  {'-'*50}")
-    print(f"  {'Baseline (Most Frequent Class)':<30} {baseline_metrics['accuracy']:>10.4f} {baseline_metrics['f1']:>10.4f}")
-    print(f"  {'Baseline (Logistic Regression)':<30} {logistic_metrics['accuracy']:>10.4f} {logistic_metrics['f1']:>10.4f}")
+    print(f"  {'Baseline (Most Frequent Class)':<30} {seed_baseline_metrics['accuracy']:>10.4f} {seed_baseline_metrics['f1']:>10.4f}")
+    print(f"  {'Baseline (Logistic Regression)':<30} {seed_lr_metrics['accuracy']:>10.4f} {seed_lr_metrics['f1']:>10.4f}")
 
     # ── March Madness ─────────────────────────────────────────
     X_mm, y_mm = load_and_prepare_mm_data(clean_df)
