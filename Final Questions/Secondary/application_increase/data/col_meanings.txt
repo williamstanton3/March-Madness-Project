@@ -1,0 +1,58 @@
+varNumber	varName	DataType	FieldWidth	format	varTitle
+1	UNITID	N	6	Cont		Unique identification number of the institution
+10521	ADMCON1	N	2	Disc		Secondary school GPA
+10526	ADMCON2	N	2	Disc		Secondary school rank
+10531	ADMCON3	N	2	Disc		Secondary school record
+10536	ADMCON4	N	2	Disc		Completion of college-preparatory program
+10541	ADMCON5	N	2	Disc		Recommendations
+10546	ADMCON6	N	2	Disc		Formal demonstration of competencies
+10551	ADMCON7	N	2	Disc		Admission test scores
+10556	ADMCON8	N	2	Disc		English Proficiency Test
+10559	ADMCON9	N	2	Disc		Other Test (Wonderlic, WISC-III, etc.)  
+10548	ADMCON10	N	2	Disc		Work experience
+10549	ADMCON11	N	2	Disc		Personal statement or essay
+10550	ADMCON12	N	2	Disc		Legacy status
+11016	APPLCN	N	6	Cont	XAPPLCN	Applicants total
+10566	APPLCNM	N	6	Cont	XAPPLCNM	Applicants men
+10571	APPLCNW	N	6	Cont	XAPPLCNW	Applicants women
+10573	APPLCNAN	N	6	Cont	XAPPLCNAN	Applicants another gender
+10574	APPLCNUN	N	6	Cont	XAPPLCNUN	Applicants gender unknown
+11021	ADMSSN	N	6	Cont	XADMSSN	Admissions total
+10576	ADMSSNM	N	6	Cont	XADMSSNM	Admissions men
+10581	ADMSSNW	N	6	Cont	XADMSSNW	Admissions women
+10584	ADMSSNAN	N	6	Cont	XADMSSNAN	Admissions another gender
+10585	ADMSSNUN	N	6	Cont	XADMSSNUN	Admissions gender unknown
+11011	ENRLT	N	6	Cont	XENRLT	Enrolled total
+11001	ENRLM	N	6	Cont	XENRLM	Enrolled  men
+11006	ENRLW	N	6	Cont	XENRLW	Enrolled  women
+11009	ENRLAN	N	6	Cont	XENRLAN	Enrolled another gender
+11010	ENRLUN	N	6	Cont	XENRLUN	Enrolled gender unknown
+11026	ENRLFT	N	6	Cont	XENRLFT	Enrolled full time total
+10586	ENRLFTM	N	6	Cont	XENRLFTM	Enrolled full time men
+10591	ENRLFTW	N	6	Cont	XENRLFTW	Enrolled full time women
+10594	ENRLFTAN	N	6	Cont	XENRLFTAN	Enrolled full time another gender
+10595	ENRLFTUN	N	6	Cont	XENRLFTUN	Enrolled full time gender unknown
+11031	ENRLPT	N	6	Cont	XENRLPT	Enrolled part time total
+10596	ENRLPTM	N	6	Cont	XENRLPTM	Enrolled part time men
+10601	ENRLPTW	N	6	Cont	XENRLPTW	Enrolled part time women
+10604	ENRLPTAN	N	6	Cont	XENRLPTAN	Enrolled part time another gender
+10605	ENRLPTUN	N	6	Cont	XENRLPTUN	Enrolled part time gender unknown
+10611	SATNUM	N	6	Cont	XSATNUM	Number of first-time degree/certificate-seeking students submitting SAT scores
+10616	SATPCT	N	3	Cont	XSATPCT	Percent of first-time degree/certificate-seeking students submitting SAT scores
+10621	ACTNUM	N	6	Cont	XACTNUM	Number of first-time degree/certificate-seeking students submitting ACT scores
+10626	ACTPCT	N	3	Cont	XACTPCT	Percent of first-time degree/certificate-seeking students submitting ACT scores
+10631	SATVR25	N	3	Cont	XSATVR25	SAT Evidence-Based Reading and Writing 25th percentile score
+10633	SATVR50	N	3	Cont	XSATVR50	SAT Evidence-Based Reading and Writing 50th percentile score
+10636	SATVR75	N	3	Cont	XSATVR75	SAT Evidence-Based Reading and Writing 75th percentile score
+10641	SATMT25	N	3	Cont	XSATMT25	SAT Math 25th percentile score
+10642	SATMT50	N	3	Cont	XSATMT50	SAT Math 50th percentile score
+10646	SATMT75	N	3	Cont	XSATMT75	SAT Math 75th percentile score
+10651	ACTCM25	N	3	Cont	XACTCM25	ACT Composite 25th percentile score
+10653	ACTCM50	N	3	Cont	XACTCM50	ACT Composite 50th percentile score
+10656	ACTCM75	N	3	Cont	XACTCM75	ACT Composite 75th percentile score
+10661	ACTEN25	N	3	Cont	XACTEN25	ACT English 25th percentile score
+10663	ACTEN50	N	3	Cont	XACTEN50	ACT English 50th percentile score
+10666	ACTEN75	N	3	Cont	XACTEN75	ACT English 75th percentile score
+10671	ACTMT25	N	3	Cont	XACTMT25	ACT Math 25th percentile score
+10673	ACTMT50	N	3	Cont	XACTMT50	ACT Math 50th percentile score
+10676	ACTMT75	N	3	Cont	XACTMT75	ACT Math 75th percentile score
