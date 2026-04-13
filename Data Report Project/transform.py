@@ -164,7 +164,6 @@ def school_median(df, col, years):
 
     return result
 
-
 # impute missing avg_height values based on the previous 5 years
 def impute_avg_height(df: pd.DataFrame) -> pd.DataFrame:
 
