@@ -1,9 +1,10 @@
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import Lasso
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
+import json
 
 
 def random_forest(df, target_col):
@@ -17,7 +18,7 @@ def random_forest(df, target_col):
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
     # train random forest 
-    rand_forest_model = RandomForestClassifier(n_estimators=100, random_state=42)
+    rand_forest_model = RandomForestRegressor(n_estimators=100, random_state=42)
     rand_forest_model.fit(x_train, y_train)
 
     # get feature importances
@@ -30,6 +31,18 @@ def random_forest(df, target_col):
     }).sort_values(by="Importance", ascending=False)
 
     return importances # a df of how important each feature is
+
+
+def save_importances_to_json(rf_importances, lasso_importances, save_path="feature_importances.json"):
+    output = {
+        "random_forest": rf_importances.set_index("Feature")["Importance"].to_dict(),
+        "lasso": lasso_importances.set_index("Feature")["Importance"].to_dict()
+    }
+
+    with open(save_path, "w") as f:
+        json.dump(output, f, indent=4)
+
+    print(f"Saved feature importances to {save_path}")
 
 
 def lasso_regression(df, target_col, alpha=0.01):
@@ -123,6 +136,8 @@ def main():
     print("\n--- Lasso Regression Feature Importances ---")
     print(feat_importances_lasso)
     graph_importance(feat_importances_lasso, top_n=20, title="Lasso Regression Feature Importances", save_path="lasso_feature_importance.png")
+
+    save_importances_to_json(feat_importances_rf, feat_importances_lasso)
 
 
 if __name__ == "__main__":

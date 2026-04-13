@@ -49,7 +49,7 @@ def replace_missing_with_mode(df: pd.DataFrame, col_name: str) -> Iterable[Any]:
     df[col_name] = df[col_name].fillna(mode)
  
     return df[col_name] 
- 
+
 def replace_missing_with_mean(df: pd.DataFrame, col_name: str) -> Iterable[Any]: 
     """Returns a modified version of the given column where missing values are filled with the mean value""" 
     mean = df[col_name].mean() 
