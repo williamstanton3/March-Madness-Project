@@ -5,6 +5,11 @@ import pandas as pd
 
 # import functions from other scripts
 from clean import convert_strings, convert_seed, convert_yes_no, impute_avg_height, impute_pre_tournament, get_final_cols, verify_clean_data
+from three_pt_rate import process_data, create_figure 
+from off_def_efficiency import build_roc_models, plot_roc_comparison
+from applicants import process_final_four_applications, plot_final_four_applications, plot_top10_applicant_jumps
+from predict_seed import run_seed_models
+
 
 
 def load_raw_mm_data() -> pd.DataFrame: 
@@ -58,7 +63,13 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 def main():
     # LOAD AND CLEAN DATA
     raw_data = load_raw_mm_data()
+
     cleaned_data = clean_data(raw_data)
+
+    print(f"NUMBER IN CLEANED_DATA: {len(cleaned_data)}")
+
+    print("CLEAN DATA COLS:")
+    print(cleaned_data.columns)
 
     if not verify_clean_data(cleaned_data):
         print("DATA IS NOT CLEAN — stopping.")
@@ -67,15 +78,39 @@ def main():
     print("Data is clean — ready for modeling.")
 
     # COMPONENT 1: 3 Pt Rate (NBA vs NCAA)
-    
+    df_merged, nba_df = process_data(cleaned_data)
+    create_figure(
+        df_merged,
+        nba_df,
+        save_path="Graphs/nba_vs_ncaa_threes.png"
+    )
 
     # COMPONENT 2: Offensive vs Defensive Efficiency to predict Final Four Appearance
+    # only use teams who made march madness 
+    mm_teams = cleaned_data[
+        (cleaned_data["Seed"] != -1) & 
+        (cleaned_data["Post-Season Tournament"] == "March Madness")
+    ]
 
+    # ensure data is right
+    print(mm_teams["Season"].value_counts())
+    print(mm_teams["Seed"].value_counts())
+    print(mm_teams["Final Four?"].value_counts())
+
+
+    print("STARTING OE vs DE")
+    results = build_roc_models(mm_teams)
+    plot_roc_comparison(results, save_path="Graphs/off_def_eff.png")
 
     # COMPONENT 3: Predict a team's Seed in March Madness (models)
-
+    print("STARTING MODEL CREATION")
+    results = run_seed_models(mm_teams, output_folder="Graphs/")
 
     # COMPONENT 4: Do schools see an increase in applicants after a Final Four Appearance?
+    print("STARING APPLICATIONS")
+    applicants_data = process_final_four_applications(mm_teams)
+    plot_final_four_applications(applicants_data, save_path="Graphs/applicants.png")
+    plot_top10_applicant_jumps(applicants_data, save_path="Graphs/applicants_spread.png")
 
 
 if __name__ == "__main__":

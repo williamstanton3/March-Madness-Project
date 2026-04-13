@@ -43,10 +43,11 @@ FINAL_COLUMNS = [
     # Physical
     "AvgHeight",
 
-    # Pre-tournament form
-    "Pre-Tournament.AdjTempo",
-    "Pre-Tournament.OE__",
-    "Pre-Tournament.DE__",
+    # Efficiency Stats
+    "OE",
+    "AdjOE",
+    "DE",
+    "AdjDE",
 
     # Tournament context
     "Seed",
@@ -83,20 +84,28 @@ def convert_seed(df):
     # tries to convert seed to an int, converts 0 to -1
     def parse(val):
         try:
-            num = int(val)
+            num = int(float(val))  # float() handles "1.0" strings
             if num == 0:
-                return -1  # treat 0 as not in tournament
+                return -1
             return num
         except:
-            return -1  # if it can't become int, make it -1
+            return -1
 
     before_counts = df["Seed"].value_counts(dropna=False)
     df["Seed"] = df["Seed"].apply(parse)
     after_counts = df["Seed"].value_counts(dropna=False)
 
+    # If seeds came in as 0-15, shift to 1-16
+    if df["Seed"].max() == 15:
+        df.loc[df["Seed"] != -1, "Seed"] = df.loc[df["Seed"] != -1, "Seed"] + 1
+        print("[convert_seed] Detected 0-indexed seeds, shifted to 1–16.")
+
     print(f"[convert_seed] Converted 'Seed' to int with -1 for non-tournament teams and 0 seeds.")
     print(f"[convert_seed] Before counts (top 5):\n{before_counts.head()}")
     print(f"[convert_seed] After counts (top 5):\n{after_counts.head()}")
+
+    print("SEED VALUES: ")
+    print(df["Seed"].value_counts())
     return df
 
 
