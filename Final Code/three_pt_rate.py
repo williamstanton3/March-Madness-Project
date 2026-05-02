@@ -46,6 +46,8 @@ def process_data(df: pd.DataFrame, start_year=2002, end_year=2026, delay=0.6):
         time.sleep(delay)
 
     nba_df = pd.DataFrame(nba_rows)
+    nba_df.to_csv("Raw_Data/nba_fg3_rates.csv", index=False)  # add this line
+
 
     # ── Merge NBA + NCAA ─────────────────────────────────────────
     df_merged = df.merge(nba_df, left_on="Season", right_on="year", how="left")
@@ -61,7 +63,7 @@ def create_figure(df, nba_df, save_path=None):
     years = nba_df["year"].values
     rates = nba_df["fg3_rate"].values
 
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(8, 8))
 
     ncaa = df.groupby("Season")["FG3Rate"].mean()
     plt.plot(ncaa.index, ncaa.values,
@@ -71,12 +73,15 @@ def create_figure(df, nba_df, save_path=None):
     plt.plot(years, rates,
              color="royalblue", linewidth=2.5, zorder=5, label="NBA FG3 Rate")
 
-    plt.xlabel("Year / Season")
+    plt.xlabel("Year")
     plt.ylabel("3PT Attempt Rate (%)")
-    plt.title("NBA vs NCAA 3-Point Evolution")
+    plt.title("(2)", fontsize=20)
     plt.grid(alpha=0.3)
     plt.legend()
     plt.tight_layout()
+
+    # add a dotted line to show when Curry won first MVP
+    plt.axvline(2015, color="black", linestyle=":", linewidth=1.5, label="2015")
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches="tight")

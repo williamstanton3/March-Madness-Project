@@ -162,6 +162,9 @@ def plot_final_four_applications(final_four_data, save_path=None):
     # Get top 5 schools
     top_5 = final_four_data.nlargest(5, "Pct_Change").copy()
 
+    # Get average applicant change 
+    avg_change = final_four_data["Pct_Change"].mean() 
+
     # Sort so smallest is at bottom, largest at top (nice horizontal bar order)
     top_5 = top_5.sort_values("Pct_Change", ascending=True)
 
@@ -172,6 +175,10 @@ def plot_final_four_applications(final_four_data, save_path=None):
         top_5["SCHOOL_NAME"],
         top_5["Pct_Change"]
     )
+
+    # add line to display average 
+    plt.axvline(avg_change, color="royalblue", linestyle="--", linewidth=1.5, label=f"Avg: {avg_change:.1f}%")
+    plt.legend()
 
     plt.xlabel("Percent Change in Applicants (%)")
     plt.ylabel("School")
@@ -188,38 +195,22 @@ def plot_final_four_applications(final_four_data, save_path=None):
         plt.savefig(save_path, dpi=300, bbox_inches="tight")
 
 
-def plot_top10_applicant_jumps(df, save_path=None):
+def plot_top14_applicant_jumps(final_four_data, save_path=None):
     """
     Shows top 7 increases and top 7 decreases in applicant % change
     for Final Four teams.
     """
 
-    # Clean data
-    df = df.dropna(subset=[
-        "Num_Applicants_That_Year",
-        "Num_Applicants_Next_Year"
-    ]).copy()
+    # Get top 7 increases and top 7 decreases
+    top_pos = final_four_data.nlargest(7, "Pct_Change")
+    top_neg = final_four_data.nsmallest(7, "Pct_Change")
 
-    # avoid divide-by-zero
-    df = df[df["Num_Applicants_That_Year"] > 0]
-
-    # Percent change
-    df["Pct_Change"] = (
-        (df["Num_Applicants_Next_Year"] - df["Num_Applicants_That_Year"])
-        / df["Num_Applicants_That_Year"]
-    ) * 100
-
-    # Top 7 increases
-    top_pos = df.nlargest(7, "Pct_Change")
-
-    # Top 7 decreases
-    top_neg = df.nsmallest(7, "Pct_Change")
-
-    # Combine
+    # Combine and sort
     combined = pd.concat([top_neg, top_pos])
-
-    # Sort for clean vertical layout (negatives bottom, positives top)
     combined = combined.sort_values("Pct_Change", ascending=True)
+
+    # Get average applicant change
+    avg_change = final_four_data["Pct_Change"].mean()
 
     labels = combined["SCHOOL_NAME"] + " (" + combined["YEAR"].astype(str) + ")"
     values = combined["Pct_Change"]
@@ -227,11 +218,15 @@ def plot_top10_applicant_jumps(df, save_path=None):
     # Colors
     colors = ["red" if v < 0 else "green" for v in values]
 
-    plt.figure(figsize=(10, 7))
+    plt.figure(figsize=(8, 8))
 
     plt.barh(labels, values, color=colors)
 
     plt.axvline(0, color="black", linewidth=1)
+
+    # Add line to display average
+    plt.axvline(avg_change, color="royalblue", linestyle="--", linewidth=1.5, label=f"Avg: {avg_change:.1f}%")
+    plt.legend()
 
     # Force symmetric x-axis limits around zero
     max_abs = max(abs(values.min()), abs(values.max()))
@@ -239,13 +234,16 @@ def plot_top10_applicant_jumps(df, save_path=None):
 
     plt.xlabel("Percent Change in Applicants (%)")
     plt.ylabel("School (Year)")
-    plt.title("Final Four Impact: Biggest Gains and Losses in Applications")
+    plt.title("(1)", fontsize=20)
 
-    # value labels
+    # Value labels
     for i, v in enumerate(values):
-        plt.text(v, i, f"{v:.1f}%", va="center")
+        if v < 0:
+            plt.text(v - 1, i, f"{v:.1f}%", va="center", ha="right")
+        else:
+            plt.text(v + 1, i, f"{v:.1f}%", va="center", ha="left")
 
-    plt.tight_layout()
+    plt.xlim(-max_abs * 1.1, max_abs * 1.2)  # more room on the right
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches="tight")
@@ -317,12 +315,12 @@ def get_applicant_data_pre_2014(folder_path="Raw_Data/application_data", school_
 
     applicant_df = pd.concat(data, ignore_index=True)
 
-    # 3️⃣ Read school names mapping
+    # 3️ Read school names mapping
     schools_df = pd.read_csv(school_file)
     schools_df.columns = schools_df.columns.str.strip().str.upper()  # normalize
     schools_df.rename(columns={"UNITID": "UNITID", "INSTITUTION NAME": "SCHOOL_NAME"}, inplace=True)
 
-    # 4️⃣ Merge UNITID to get school names
+    # 4️ Merge UNITID to get school names
     merged_df = applicant_df.merge(schools_df[['UNITID', 'SCHOOL_NAME']], on='UNITID', how='left')
 
     # Optional: put school name first
