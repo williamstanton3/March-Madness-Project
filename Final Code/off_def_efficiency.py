@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_curve, roc_auc_score
@@ -31,13 +29,11 @@ def build_roc_models(df: pd.DataFrame):
     y = data["Final Four?"]
 
     # Same split logic for fairness
-    X_off_train, X_off_test, y_train, y_test = train_test_split(
-        X_off, y, test_size=0.3, random_state=42
-    )
+    train_idx, test_idx = train_test_split(data.index, test_size=0.3, random_state=42)
 
-    X_def_train, X_def_test, _, _ = train_test_split(
-        X_def, y, test_size=0.3, random_state=42
-    )
+    X_off_train, X_off_test = X_off.loc[train_idx], X_off.loc[test_idx]
+    X_def_train, X_def_test = X_def.loc[train_idx], X_def.loc[test_idx]
+    y_train, y_test = y.loc[train_idx], y.loc[test_idx]
 
     # Offensive model
     off_model = LogisticRegression()
