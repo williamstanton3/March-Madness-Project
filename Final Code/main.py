@@ -84,15 +84,16 @@ def main():
     results = build_roc_models(mm_teams)
     plot_roc_comparison(results, save_path="Graphs/off_def_eff.png")
 
-    # COMPONENT 3: Predict a team's Seed in March Madness (models)
-    print("STARTING MODEL CREATION")
-    results = run_seed_models(mm_teams, output_folder="Graphs/")
+    # # COMPONENT 3: Do schools see an increase in applicants after a Final Four Appearance?
+    # print("STARING APPLICATIONS")
+    # applicants_data = process_final_four_applications(mm_teams)
+    # plot_final_four_applications(applicants_data, save_path="Graphs/applicants.png")
+    # plot_top10_applicant_jumps(applicants_data, save_path="Graphs/applicants_spread.png")
 
-    # COMPONENT 4: Do schools see an increase in applicants after a Final Four Appearance?
-    print("STARING APPLICATIONS")
-    applicants_data = process_final_four_applications(mm_teams)
-    plot_final_four_applications(applicants_data, save_path="Graphs/applicants.png")
-    plot_top14_applicant_jumps(applicants_data, save_path="Graphs/applicants_spread.png")
+    # COMPONENT 4: Predict March Madness qualification using ML models (with SMOTE)
+    train_models_and_get_accuracies(cleaned_data, output_folder="output_models")
+    plot_model_comparison(cleaned_data, save_path="Graphs/model_comparison_mm.png")
+    plot_confusion_matrices(cleaned_data, save_path="Graphs/confusion_matrices_mm.png")
 
 
 if __name__ == "__main__":
